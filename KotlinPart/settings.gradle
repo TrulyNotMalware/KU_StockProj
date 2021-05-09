@@ -1,0 +1,2 @@
+rootProject.name='StockPrediction'
+include ':app'
