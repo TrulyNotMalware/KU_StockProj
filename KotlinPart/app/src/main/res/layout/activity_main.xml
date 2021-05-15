@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <TextView
         android:id="@+id/id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="회원번호: "
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/nickname"
@@ -22,10 +22,9 @@
         android:layout_height="wrap_content"
         android:text="닉네임: "
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/id"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/id" />
 
     <TextView
         android:id="@+id/profileimage_url"
@@ -33,21 +32,12 @@
         android:layout_height="wrap_content"
         android:text="프로필 링크: "
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/nickname" />
 
-    <TextView
-        android:id="@+id/thumbnailimage_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="썸네일 링크: "
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/profileimage_url"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+
+
     <Button
         android:id="@+id/kakao_logout_button"
         android:layout_width="match_parent"
@@ -67,5 +57,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
