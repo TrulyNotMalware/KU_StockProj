@@ -15,6 +15,7 @@ import com.ms129.stockPrediction.favoriteStock.FavoriteStockActivity
 import com.ms129.stockPrediction.naverAPI.INaverAPI
 import com.ms129.stockPrediction.naverAPI.Items
 import com.ms129.stockPrediction.naverAPI.NaverRepository
+import kotlinx.android.synthetic.main.activity_after_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         val retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(IController::class.java)
-        //init(myAPI)
+        init(myAPI)
         initSetting()
         initNaver()
 
@@ -67,32 +68,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun init(myAPI: IController) {
 
-        kakao_logout_button.setOnClickListener {
-            UserApiClient.instance.logout { error ->
-                if (error != null) {
-                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
-                }else {
-                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-                }
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
-            }
+//        kakao_logout_button.setOnClickListener {
+//            UserApiClient.instance.logout { error ->
+//                if (error != null) {
+//                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
+//                }else {
+//                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+//                }
+//                val intent = Intent(this, LoginActivity::class.java)
+//                startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
+//            }
+//
+//        }
+//
+//        kakao_unlink_button.setOnClickListener {
+//            UserApiClient.instance.unlink { error ->
+//                if (error != null) {
+//                    Toast.makeText(this, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
+//                }else {
+//                    Toast.makeText(this, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
+//                    val intent = Intent(this, LoginActivity::class.java)
+//                    startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
+//                }
+//            }
+//        }
 
-        }
-
-        kakao_unlink_button.setOnClickListener {
-            UserApiClient.instance.unlink { error ->
-                if (error != null) {
-                    Toast.makeText(this, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
-                }else {
-                    Toast.makeText(this, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
-                }
-            }
-        }
-
-        button.setOnClickListener {
+        buttonMS129.setOnClickListener {
             val post = DataClass(1, "a", "b")
 
             myAPI.test(post)?.enqueue(object : Callback<DataClass?>{
