@@ -10,4 +10,3 @@
   $ source ./venv/bin/activate
   $ go run main.go
   ```
-
