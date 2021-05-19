@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,5 +20,35 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/kakao_login_medium_wide" />
+
+    <TextView
+        android:id="@+id/textViewIn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="72dp"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/textViewIn3"
+        app:layout_constraintStart_toStartOf="@+id/textViewIn3" />
+
+    <TextView
+        android:id="@+id/textViewIn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="19dp"
+        android:textColor="#ffffff"
+        app:layout_constraintStart_toStartOf="@+id/textViewIn1"
+        app:layout_constraintTop_toBottomOf="@+id/textViewIn1" />
+
+    <TextView
+        android:id="@+id/textViewIn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="121dp"
+        android:layout_marginBottom="70dp"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/kakao_login_button"
+        app:layout_constraintStart_toStartOf="@+id/kakao_login_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.ms129.stockPrediction
+package com.ms129.stockPrediction.login
 
 import com.google.gson.annotations.SerializedName
 
