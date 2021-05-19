@@ -1,53 +1,64 @@
 package com.ms129.stockPrediction
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.htmlEncode
 import androidx.core.text.parseAsHtml
 import com.kakao.sdk.user.UserApiClient
 import com.ms129.stockPrediction.favoriteStock.FavoriteStockActivity
+import com.ms129.stockPrediction.login.IController
+import com.ms129.stockPrediction.login.RetrofitClient
 import com.ms129.stockPrediction.naverAPI.INaverAPI
 import com.ms129.stockPrediction.naverAPI.Items
 import com.ms129.stockPrediction.naverAPI.NaverRepository
-import kotlinx.android.synthetic.main.activity_after_login.*
+import com.ms129.stockPrediction.news.NewsActivity
+import com.ms129.stockPrediction.news.NewsDetailActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     lateinit var myAPI : IController
     lateinit var naverAPI : INaverAPI
+    val REQUEST_LIST_STOCK = 99
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_after_login)
-
-//        UserApiClient.instance.me { user, error ->
-//            id.text = "회원번호: ${user?.id}"
-//            nickname.text = "닉네임: ${user?.kakaoAccount?.profile?.nickname}"
-//            profileimage_url.text = "프로필 링크: ${user?.kakaoAccount?.profile?.profileImageUrl}"
-//        }
+        setContentView(R.layout.activity_main)
 
         val retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(IController::class.java)
         init(myAPI)
         initSetting()
         initNaver()
+        initView()
+    }
 
+    private fun initView() {
+        UserApiClient.instance.me { user, error ->
+            val userId = user?.kakaoAccount?.profile?.nickname
+            val str = userId + "님 안녕하세요"
+            topView.text = str
+        }
+        accountBtn.setOnClickListener {
+            val intent = Intent(this, AccountInfoActivity::class.java)
+            startActivity(intent)
+        }
+
+        analyzeBtn.setOnClickListener {
+            val intent = Intent(this, StockAnalyzeAcitivy::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun initSetting() {
-        val editFavoriteView = findViewById<View>(R.id.editFavoriteView)
-        editFavoriteView.setOnClickListener {
+        favStockSettingButton.setOnClickListener {
             val intent = Intent(this, FavoriteStockActivity::class.java)
+            startActivityForResult(intent, REQUEST_LIST_STOCK)
+        }
+        newsButton.setOnClickListener {
+            val intent = Intent(this, NewsActivity::class.java)
             startActivity(intent)
         }
     }
@@ -58,8 +69,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSearchNewsFetched(news: List<Items>) {
         //Log.d("NaverAPI",news.toString())
-        val newsView = findViewById<TextView>(R.id.newsView)
-        newsView.text = news[0].title.parseAsHtml()
+        val newsView = findViewById<TextView>(R.id.newsView1)
+        newsView1.text = news[0].title.parseAsHtml()
+        newsView2.text = news[1].title.parseAsHtml()
+        newsView3.text = news[2].title.parseAsHtml()
+        newsView1.setOnClickListener {
+            val intent = Intent(this, NewsDetailActivity::class.java)
+            intent.putExtra("news_link", news[0].link)
+            startActivity(intent)
+        }
+        newsView2.setOnClickListener {
+            val intent = Intent(this, NewsDetailActivity::class.java)
+            intent.putExtra("news_link", news[1].link)
+            startActivity(intent)
+        }
+        newsView3.setOnClickListener {
+            val intent = Intent(this, NewsDetailActivity::class.java)
+            intent.putExtra("news_link", news[2].link)
+            startActivity(intent)
+        }
     }
 
     private fun onError() {
@@ -68,59 +96,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun init(myAPI: IController) {
 
-//        kakao_logout_button.setOnClickListener {
-//            UserApiClient.instance.logout { error ->
-//                if (error != null) {
-//                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
-//                }else {
-//                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-//                }
-//                val intent = Intent(this, LoginActivity::class.java)
-//                startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
-//            }
-//
-//        }
-//
-//        kakao_unlink_button.setOnClickListener {
-//            UserApiClient.instance.unlink { error ->
-//                if (error != null) {
-//                    Toast.makeText(this, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
-//                }else {
-//                    Toast.makeText(this, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(this, LoginActivity::class.java)
-//                    startActivity(intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP))
-//                }
-//            }
-//        }
+    }
 
-        buttonMS129.setOnClickListener {
-            val post = DataClass(1, "a", "b")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != RESULT_OK) return
 
-            myAPI.test(post)?.enqueue(object : Callback<DataClass?>{
-                override fun onResponse(call: Call<DataClass?>, response: Response<DataClass?>) {
-                    Log.d("Response:: ", response.body().toString())
-                    val id = response.body()!!.userId
-                    Log.d("${id}:: ", id.toString())
-                    Log.d("onResponse::", "Success")
-                }
-
-                override fun onFailure(call: Call<DataClass?>, t: Throwable) {
-                    Log.d("myAPI::", "Failed API call with call: " + call +
-                            " + exception: " + t)
-                }
-            })
-
-            val result = myAPI.getTest()
-            result?.enqueue(object: Callback<String?>{
-                override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                    Log.d("onResponse:: ", "Success : $response")
-                }
-
-                override fun onFailure(call: Call<String?>, t: Throwable) {
-                    Log.d("onFailure:: ", "exception: $t")
-                }
-
-            })
+        if(requestCode == REQUEST_LIST_STOCK){
+            if(data != null){
+                val receiveData = data.getStringArrayExtra("stock_list") as Array<String>
+                val str = "Code: " + receiveData!![0] + "   Price: " + receiveData!![1]
+                stock_view1.text = str
+            }
         }
     }
 }

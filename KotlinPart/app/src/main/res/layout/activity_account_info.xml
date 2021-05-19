@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="5"
+    tools:context=".AccountInfoActivity">
+
+    <!--    상단 고정-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/blue_bg"
+            android:gravity="center"
+            android:text="계정 관리"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="4">
+        <!--회원번호 프레임-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_rectangle"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/user_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="#000000"
+                    android:text="회원번호 : "
+                    android:background="@drawable/ic_rectangle"/>
+            </LinearLayout>
+        </FrameLayout>
+        <!--닉네임 프레임-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_rectangle"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/nick_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="#000000"
+                    android:text="닉네임 : "
+                    android:background="@drawable/ic_rectangle"/>
+            </LinearLayout>
+        </FrameLayout>
+        <!--프로필링크 프레임-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_rectangle"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/profile_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="#000000"
+                    android:text="프로필링크 : "
+                    android:background="@drawable/ic_rectangle"/>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!--    하단 고정-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:padding="6dip">
+
+        <!--로그아웃 버튼-->
+        <Button android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="로그아웃"/>
+        <!--회원탈퇴 버튼-->
+        <Button android:id="@+id/leaveButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:text="회원탈퇴"/>
+
+    </LinearLayout>
+</LinearLayout>

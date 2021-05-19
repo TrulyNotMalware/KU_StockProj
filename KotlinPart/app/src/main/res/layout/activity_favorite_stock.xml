@@ -45,30 +45,43 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <View
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/favorite1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btc" />
+                android:background="@drawable/btc"
+                android:textColor="#000000"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:padding="10dp"/>
 
             <View
+                android:id="@+id/favorite2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
+                android:background="@drawable/btc"
+                android:padding="5dp"/>
 
             <View
+                android:id="@+id/favorite3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
+                android:background="@drawable/btc"
+                android:padding="5dp"/>
 
             <View
+                android:id="@+id/favorite4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
+                android:background="@drawable/btc"
+                android:padding="5dp"/>
 
             <View
+                android:id="@+id/favorite5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
+                android:background="@drawable/btc"
+                android:padding="5dp"/>
 
         </LinearLayout>
     </ScrollView>

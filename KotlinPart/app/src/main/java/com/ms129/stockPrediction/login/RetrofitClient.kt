@@ -1,4 +1,4 @@
-package com.ms129.stockPrediction
+package com.ms129.stockPrediction.login
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
