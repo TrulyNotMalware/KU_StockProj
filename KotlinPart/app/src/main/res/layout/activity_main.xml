@@ -60,53 +60,54 @@
                     android:text="Button" />
             </FrameLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/interestRecyclerView"
+                android:layout_margin="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="최근 분석"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
+
+                <ImageButton
+                    android:id="@+id/recentAnalyzeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:src="@android:drawable/ic_menu_add"
+                    android:background="#00ffffff"
+                    android:layout_marginEnd="10dp"/>
+            </FrameLayout>
+
             <TextView
-                android:id="@+id/stock_view1"
+                android:id="@+id/recentAnalyzeView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:background="@drawable/btc"/>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btc"/>
-
-            <!--            <View-->
-            <!--                android:id="@+id/editFavoriteView"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:background="@drawable/deposit"/>-->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="최근 분석"
-                android:textSize="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"/>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="196dp"
                 android:background="@drawable/btc" />
+
+            <View
+                android:id="@+id/recentAnalyzeView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btc"/>
+
+            <View
+                android:id="@+id/recentAnalyzeView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btc"/>
+
 
             <FrameLayout
                 android:layout_width="fill_parent"

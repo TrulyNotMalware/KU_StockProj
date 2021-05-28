@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".login.GlobalApplication"
+        android:name=".ms129Server.GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,9 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".news.NewsDetailActivity"></activity>
+        <activity android:name=".LoadingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".recentStock.RecentAnalyzedActivity" />
+        <activity android:name=".recentStock.AnalyzedDetailActivity" />
+        <activity android:name=".news.NewsDetailActivity" />
         <activity android:name=".news.NewsActivity" />
-        <activity android:name=".StockAnalyzeAcitivy" />
+        <activity android:name=".StockAnalyzeActivity" />
         <activity android:name=".AccountInfoActivity" />
         <activity android:name=".favoriteStock.EditFavoriteStock" />
         <activity
@@ -23,11 +31,6 @@
             android:label="@string/title_activity_favorite_stock"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">

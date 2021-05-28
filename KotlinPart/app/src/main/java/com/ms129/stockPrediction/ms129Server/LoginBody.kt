@@ -1,6 +1,4 @@
-package com.ms129.stockPrediction.login
-
-import com.google.gson.annotations.SerializedName
+package com.ms129.stockPrediction.ms129Server
 
 data class LoginBody(
     val UID: String,
