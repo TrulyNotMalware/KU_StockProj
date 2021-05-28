@@ -10,7 +10,8 @@ import android.widget.Toast
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause.*
 import com.kakao.sdk.user.UserApiClient
-import com.ms129.stockPrediction.login.*
+import com.ms129.stockPrediction.ms129Server.*
+import kotlinx.android.synthetic.main.activity_account_info.*
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -91,39 +92,70 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun requestLogin() {
-        val kakaoAccountInfo = getKakaoID()
-        val a1 = textViewIn1.text.toString()
-        val loginBody = LoginBody(kakaoAccountInfo[0], kakaoAccountInfo[1], kakaoAccountInfo[2])
-        Log.d("KAKAO: loginBody::",a1 + "," + kakaoAccountInfo[1] + "," + kakaoAccountInfo[2])
-        myAPI.login(loginBody).enqueue(object: Callback<LoginReturnData> {
-            override fun onResponse(call: Call<LoginReturnData>, response: Response<LoginReturnData>) {
-                if (!response.isSuccessful) {
-                    Log.d("KAKAO Login isn't Successful::", response.body().toString())
-                    return
-                }
-                Log.d("KAKAO Login Success::", response.body().toString())
-//                if(response.body().toString() == "0"){ // 처음이 아님
-                    dataLoad("1")
+//        myAPI.login(loginBody).enqueue(object: Callback<LoginReturnData> {
+//            override fun onResponse(call: Call<LoginReturnData>, response: Response<LoginReturnData>) {
+//                if (!response.isSuccessful) {
+//                    Log.d("KAKAO Login isn't Successful::", response.body().toString())
+//                    return
 //                }
-//                else{
-//                    goToMainActivity()
-//                }
+//                Log.d("KAKAO Login Success::", response.body().toString())
+////                if(response.body().toString() == "0"){ // 처음이 아님
+//                    dataLoad("1")
+////                }
+////                else{
+////                    goToMainActivity()
+////                }
+//            }
+//            override fun onFailure(call: Call<LoginReturnData>, t: Throwable) {
+//                Log.d("KAKAO Login Failure::", t.toString())
+//                goToMainActivity()
+//            }
+//        })
+        UserApiClient.instance.me { user, error ->
+            if(user != null){
+                val userId = user.id.toString()
+                val nickName = user.kakaoAccount?.profile?.nickname.toString()
+                val profileImageLink = user.kakaoAccount?.profile?.profileImageUrl.toString()
+                val loginBody = LoginBody(userId, nickName, profileImageLink)
+                Log.d("KAKAO:instanceInfo->", "$userId, $nickName, $profileImageLink")
+
+                myAPI.login(loginBody).enqueue(object: Callback<LoginReturnData> {
+                    override fun onResponse(call: Call<LoginReturnData>, response: Response<LoginReturnData>) {
+                        if (!response.isSuccessful) {
+                            Log.d("KAKAO Login isn't Successful::", response.body().toString())
+                            return
+                        }
+                        Log.d("KAKAO Login Success::", response.body()!!.isFirst)
+                        val result = response.body()!!.isFirst
+                        if(result == "0"){ // 처음이 아님
+                            dataLoad(userId)
+                        }
+                        else{
+                            goToMainActivity()
+                        }
+                    }
+                    override fun onFailure(call: Call<LoginReturnData>, t: Throwable) {
+                        Log.d("KAKAO Login Failure::", t.toString())
+                        Toast.makeText(this@LoginActivity, "로그인 실패 에러", Toast.LENGTH_LONG).show()
+                        goToMainActivity()
+                    }
+                })
             }
-            override fun onFailure(call: Call<LoginReturnData>, t: Throwable) {
-                Log.d("KAKAO Login Failure::", t.toString())
-                goToMainActivity()
+            else{
+                Log.e("UserApiClient-user::userInfo[0]", "ERROR")
             }
-        })
+        }
     }
 
     private fun dataLoad(id: String) {
-        myAPI.onLoad(DataClass2(id)).enqueue(object: Callback<FavoriteStockData?> {
-            override fun onResponse(call: Call<FavoriteStockData?>, response: Response<FavoriteStockData?>) {
-                Log.d("KAKAO OnLoad Success::", response.body()?.code.toString())
+        myAPI.onLoad(id).enqueue(object: Callback<DonLoad?> {
+            override fun onResponse(call: Call<DonLoad?>, response: Response<DonLoad?>) {
+                Log.d("KAKAO OnLoad Success::", response.body().toString())
+                Log.d("KAKAO OnLoad Success2::", response.body()!!.analyzedStocks[0].date)
                 //val str = response.body()?.code?.get(0)!!
                 //Log.d("KAKAO OnLoad Success2::", str)
             }
-            override fun onFailure(call: Call<FavoriteStockData?>, t: Throwable) {
+            override fun onFailure(call: Call<DonLoad?>, t: Throwable) {
                 Log.d("KAKAO OnLoad Failure::", t.toString())
             }
 
@@ -132,36 +164,9 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun getKakaoID(): ArrayList<String> {
-        val userInfo = arrayListOf<String>()
-        userInfo.add("1")
-        userInfo.add("kim")
-        userInfo.add("naver")
-
-        UserApiClient.instance.me { user, error ->
-            if(user != null){
-                val userId = user.id.toString()
-                val nickName = user.kakaoAccount?.profile?.nickname
-                val profileImageLink = user.kakaoAccount?.profile?.profileImageUrl
-                textViewIn1.text = userId
-                if (nickName != null)
-                    textViewIn2.text = nickName.toString()
-                if (profileImageLink != null)
-                    textViewIn3.text = profileImageLink.toString()
-                userInfo[0] = userId
-                Log.d("KAKAO:instanceInfo->", "${userInfo[0]}, $userId, $nickName, $profileImageLink")
-
-            }
-            else{
-                Log.e("UserApiClient-user::userInfo[0]", userInfo[0])
-            }
-        }
-        Log.e("UserApiClient-user::userInfo[0]", userInfo[0])
-        return userInfo
-    }
-
     private fun goToMainActivity(){
         val intent = Intent(baseContext, MainActivity::class.java)
         startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        finish()
     }
 }

@@ -1,4 +1,4 @@
-package com.ms129.stockPrediction.login
+package com.ms129.stockPrediction.ms129Server
 
 import android.app.Application
 import com.kakao.sdk.common.KakaoSdk
