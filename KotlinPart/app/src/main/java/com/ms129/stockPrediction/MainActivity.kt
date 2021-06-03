@@ -2,18 +2,15 @@ package com.ms129.stockPrediction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kakao.sdk.user.UserApiClient
 import com.ms129.stockPrediction.favoriteStock.FavoriteStockActivity
-import com.ms129.stockPrediction.ms129Server.DonLoad
-import com.ms129.stockPrediction.ms129Server.IController
-import com.ms129.stockPrediction.ms129Server.RetrofitClient
+import com.ms129.stockPrediction.ms129Server.*
 import com.ms129.stockPrediction.naverAPI.INaverAPI
 import com.ms129.stockPrediction.naverAPI.Items
 import com.ms129.stockPrediction.naverAPI.NaverRepository
@@ -21,7 +18,7 @@ import com.ms129.stockPrediction.news.NewsActivity
 import com.ms129.stockPrediction.news.NewsDetailActivity
 import com.ms129.stockPrediction.recentStock.AnalyzedDetailActivity
 import com.ms129.stockPrediction.recentStock.RecentAnalyzedActivity
-import com.ms129.stockPrediction.recentStock.RecentStockData
+import com.ms129.stockPrediction.recentStock.AnalyzedRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var myAPI : IController
     lateinit var naverAPI : INaverAPI
     lateinit var favoriteRecyclerAdapter : FavoriteRecyclerAdapter
+    lateinit var analyzedRecyclerAdapter: AnalyzedRecyclerAdapter
     val REQUEST_LIST_STOCK = 99
 
 
@@ -41,28 +39,96 @@ class MainActivity : AppCompatActivity() {
         val retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(IController::class.java)
         init()
-        initNaver()
-        initView()
+
     }
 
 
     private fun init() {
         val receivedIntent = intent
-      //  val onLoadData = receivedIntent.getSerializableExtra("ON_LOAD_DATA") as DonLoad
-//        val str = onLoadData.favoriteStocks[0].stockCode + "/" + onLoadData.favoriteStocks[0].price + "/" + onLoadData.favoriteStocks[0].date
-//        stock_view1.text = str
-        //val str2 = onLoadData.analyzedStocks[0].stockCode + "/" + onLoadData.analyzedStocks[0].option + "/" + onLoadData.analyzedStocks[0].date
-        //recentAnalyzeView1.text = str2
-        favoriteRecyclerAdapter = FavoriteRecyclerAdapter()
-        var modelList = ArrayList<RecentStockData>()
-//        for (n in news){
-//            val myModel = NewsData(title = n.title, date = n.pubDate)
-//            modelList.add(myModel)
-//        }
+        val isFirst = receivedIntent.getStringExtra("IS_FIRST") as String
+        val nickName = receivedIntent.getStringExtra("NICK_NAME") as String
+        val id = receivedIntent.getStringExtra("ID") as String
 
-        val data1 = RecentStockData("AAPL", "2021-01-01", "3", listOf("1000", "1001"), listOf("1030", "1001"))
-        modelList.add(data1)
-        favoriteRecyclerAdapter.submitList(modelList)
+        initNaver()
+
+        setButtonListener()
+        if(isFirst == "0"){
+            myAPI.onLoad(id).enqueue(object: Callback<DonLoad?> {
+                override fun onResponse(call: Call<DonLoad?>, response: Response<DonLoad?>) {
+                    Log.d("[MAIN] OnLoad Success::", response.body().toString())
+                    val onLoadData = response.body()
+                    initTopView(onLoadData?.userName)
+                    initFavoriteSector(onLoadData?.favoriteStocks)
+                    initAnalyzedSector(onLoadData?.analyzedStocks)
+                }
+                override fun onFailure(call: Call<DonLoad?>, t: Throwable) {
+                    Log.d("[MAIN] OnLoad Failure::", t.toString())
+                    initTopView("FAIL")
+                    initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL")))
+                    initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
+                }
+            })
+        }
+        else{
+            Log.d("[MAIN] isFirst::", "YES")
+            initTopView("FAIL")
+            initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL")))
+            initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
+        }
+    }
+
+    private fun initAnalyzedSector(analyzedStocks: List<AnalyzedStock>?) {
+        analyzedRecyclerAdapter = AnalyzedRecyclerAdapter()
+        val temp = ArrayList<AnalyzedStock>()
+        var modelList = ArrayList<AnalyzedStock>()
+        if(analyzedStocks == null || analyzedStocks.isEmpty()){
+            Log.e("[MAIN] AnalyzedSector::", "null or empty")
+            val data1 = AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")
+            modelList.add(data1)
+            analyzedRecyclerAdapter.submitList(modelList)
+        }
+        else{
+            Log.e("[MAIN] AnalyzedSector::", ">=5")
+            if(analyzedStocks.size >= 3)
+                for(i in 0..2)
+                    temp.add(analyzedStocks[i])
+            else
+                for(stock in analyzedStocks)
+                    temp.add(stock)
+            modelList = temp
+            analyzedRecyclerAdapter.submitList(modelList)
+        }
+        analyzedRecyclerAdapter.itemClickListener = object: AnalyzedRecyclerAdapter.OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                val intent = Intent(this@MainActivity, AnalyzedDetailActivity::class.java)
+                intent.putExtra("MAIN_ANALYZED_DATA", temp[position])
+                startActivity(intent)
+            }
+        }
+        analyzedMainRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        analyzedMainRecyclerView.adapter = analyzedRecyclerAdapter
+    }
+
+    private fun initFavoriteSector(favoriteStocks: List<FavoriteStock>?) {
+        favoriteRecyclerAdapter = FavoriteRecyclerAdapter()
+        var modelList = ArrayList<FavoriteStock>()
+        if(favoriteStocks == null || favoriteStocks.isEmpty()){
+            val data1 = FavoriteStock("nullOrSize0", "nullOrSize0", "nullOrSize0")
+            modelList.add(data1)
+            favoriteRecyclerAdapter.submitList(modelList)
+        }
+        else{
+            val temp = ArrayList<FavoriteStock>()
+            Log.e("[MAIN] FavoriteSector::", ">=5")
+            if(favoriteStocks.size >= 5)
+                for(i in 0..5)
+                    temp.add(favoriteStocks[i])
+            else
+                for(stock in favoriteStocks)
+                    temp.add(stock)
+            modelList = temp
+            favoriteRecyclerAdapter.submitList(modelList)
+        }
         favoriteRecyclerAdapter.itemClickListener = object: FavoriteRecyclerAdapter.OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
 
@@ -70,16 +136,9 @@ class MainActivity : AppCompatActivity() {
         }
         interestRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         interestRecyclerView.adapter = favoriteRecyclerAdapter
-
     }
 
-    private fun initView() {
-        UserApiClient.instance.me { user, error ->
-            val userId = user?.kakaoAccount?.profile?.nickname
-            val str = userId + "님 안녕하세요"
-            topView.text = str
-        }
-
+    private fun setButtonListener(){
         accountBtn.setOnClickListener {
             val intent = Intent(this, AccountInfoActivity::class.java)
             startActivity(intent)
@@ -104,6 +163,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NewsActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun initTopView(userId: String?) {
+        if(userId == null){
+            val str = "NULLLLLL님 안녕하세요"
+            topView.text = str
+        }
+            val str = userId + "님 안녕하세요"
+            topView.text = str
     }
 
     private fun initNaver() {
