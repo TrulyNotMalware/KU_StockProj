@@ -26,6 +26,7 @@ class FavoriteStockActivity : AppCompatActivity() {
 
     private fun init() {
         val addStockButton = findViewById<ImageButton>(R.id.addStockButton)
+
         addStockButton.setOnClickListener {
             val intent = Intent(this, EditFavoriteStock::class.java)
             Log.d("Favorite::", "intent")

@@ -84,7 +84,7 @@ class StockAnalyzeActivity : AppCompatActivity() {
         analyzeButton.setOnClickListener {
             progressBar2.visibility = ProgressBar.VISIBLE
             UserApiClient.instance.me { user, error ->
-                myAPI.analyzeStock(DAnalyzePost(user!!.id.toString(), "2020-01-01", checkNum.toString(), stockCodeNum))
+                myAPI.analyzeStock(DAnalyzePost(user!!.id.toString(), "2020-01-01", checkNum.toString(), "0", stockCodeNum))
                     .enqueue(object: Callback<DAnalyzeResult> {
                         override fun onResponse(
                             call: Call<DAnalyzeResult>,

@@ -76,9 +76,10 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             else if (token != null) {
+                val retrofit = RetrofitClient.getInstance()
+                myAPI = retrofit.create(IController::class.java)
+                requestLogin()
                 Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
-
-
             }
         }
 
@@ -127,17 +128,13 @@ class LoginActivity : AppCompatActivity() {
                         }
                         Log.d("KAKAO Login Success::", response.body()!!.isFirst)
                         val result = response.body()!!.isFirst
-                        if(result == "0"){ // 처음이 아님
-                            dataLoad(userId)
-                        }
-                        else{
-                            goToMainActivity()
-                        }
+                        // result : 0 처음 아님 1: 처음
+                        goToMainActivity(result)
                     }
                     override fun onFailure(call: Call<LoginReturnData>, t: Throwable) {
                         Log.d("KAKAO Login Failure::", t.toString())
                         Toast.makeText(this@LoginActivity, "로그인 실패 에러", Toast.LENGTH_LONG).show()
-                        goToMainActivity()
+                        goToMainActivity("999")
                     }
                 })
             }
@@ -147,26 +144,50 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun dataLoad(id: String) {
-        myAPI.onLoad(id).enqueue(object: Callback<DonLoad?> {
-            override fun onResponse(call: Call<DonLoad?>, response: Response<DonLoad?>) {
-                Log.d("KAKAO OnLoad Success::", response.body().toString())
-                Log.d("KAKAO OnLoad Success2::", response.body()!!.analyzedStocks[0].date)
-                //val str = response.body()?.code?.get(0)!!
-                //Log.d("KAKAO OnLoad Success2::", str)
-            }
-            override fun onFailure(call: Call<DonLoad?>, t: Throwable) {
-                Log.d("KAKAO OnLoad Failure::", t.toString())
-            }
+//    private fun dataLoad(id: String) {
+//        myAPI.onLoad(id).enqueue(object: Callback<DonLoad?> {
+//            override fun onResponse(call: Call<DonLoad?>, response: Response<DonLoad?>) {
+//                Log.d("KAKAO OnLoad Success::", response.body().toString())
+//                Log.d("KAKAO OnLoad Success2::", response.body()!!.analyzedStocks[0].date)
+//                //val str = response.body()?.code?.get(0)!!
+//                //Log.d("KAKAO OnLoad Success2::", str)
+//            }
+//            override fun onFailure(call: Call<DonLoad?>, t: Throwable) {
+//                Log.d("KAKAO OnLoad Failure::", t.toString())
+//            }
+//
+//        })
+//        goToMainActivity()
+//
+//    }
 
-        })
-        goToMainActivity()
-
-    }
-
-    private fun goToMainActivity(){
+    private fun goToMainActivity(isFirst : String) {
         val intent = Intent(baseContext, MainActivity::class.java)
-        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-        finish()
+        if(isFirst == "999"){
+            intent.putExtra("ID", "FAIL")
+            intent.putExtra("NICK_NAME", "FAIL")
+            intent.putExtra("IS_FIRST", "1")
+            startActivity(intent)
+            finish()
+        }
+        UserApiClient.instance.me { user, error ->
+            if (user != null) {
+                val userId = user.id.toString()
+                val nickName = user.kakaoAccount?.profile?.nickname.toString()
+                intent.putExtra("ID", userId)
+                intent.putExtra("NICK_NAME", nickName)
+                intent.putExtra("IS_FIRST", isFirst)
+                startActivity(intent)
+                finish()
+            }
+            else{
+                Log.e("goToMainActivity", "user == null")
+                intent.putExtra("ID", "sample")
+                intent.putExtra("NICK_NAME", "sample")
+                intent.putExtra("IS_FIRST", "1")
+                startActivity(intent)
+                finish()
+            }
+        }
     }
 }

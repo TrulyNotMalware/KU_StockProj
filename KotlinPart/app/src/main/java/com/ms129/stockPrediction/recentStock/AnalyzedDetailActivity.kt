@@ -8,6 +8,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.ms129.stockPrediction.R
+import com.ms129.stockPrediction.ms129Server.AnalyzedStock
 import com.ms129.stockPrediction.ms129Server.DAnalyzeResult
 import kotlinx.android.synthetic.main.activity_analyzed_detail.*
 import kotlin.math.absoluteValue
@@ -19,23 +20,32 @@ class AnalyzedDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analyzed_detail)
         val receivedIntent = intent
-        val data = intent.getSerializableExtra("DATA") as DAnalyzeResult
-        val stockData = RecentStockData(data.stockCode, data.date, data.option, data.resultData, data.realData)
-
-        initRealChart(stockData)
-        initRecentChart(stockData)
-        initText(stockData)
+        val data = intent.getSerializableExtra("DATA") as DAnalyzeResult?
+        val dataFromMain = intent.getSerializableExtra("MAIN_ANALYZED_DATA") as AnalyzedStock?
+        if(data != null){
+            val stockData = AnalyzedStock(data.date, data.option, data.resultData, data.realData, data.stockCode)
+            initRealChart(stockData)
+            initRecentChart(stockData)
+            initText(stockData)
+        }
+        else{
+            val stockData = AnalyzedStock(dataFromMain!!.date, dataFromMain.option
+                , dataFromMain.resultData, dataFromMain.realData, dataFromMain.stockCode)
+            initRealChart(stockData)
+            initRecentChart(stockData)
+            initText(stockData)
+        }
     }
 
-    private fun initText(stockData: RecentStockData) {
+    private fun initText(stockData: AnalyzedStock) {
         analyzedDate.text = stockData.date.toString()
         analyzedStockCode.text = stockData.stockCode
         when(stockData.option.toInt()){
             0 -> analyzedOption.text = "1주 간격 머신러닝"
             1 -> analyzedOption.text = "2주 간격 머신러닝"
             2 -> analyzedOption.text = "1달 간격 머신러닝"
-            3 -> analyzedOption.text = "3달 간격 머신러닝"
-            4 -> analyzedOption.text = "6달 간격 머신러닝"
+            3 -> analyzedOption.text = "2달 간격 머신러닝"
+            4 -> analyzedOption.text = "3달 간격 머신러닝"
         }
         var errorRate = calculateErrorRate(stockData.realData, stockData.resultData)
         errorRate = ((errorRate*100).roundToInt() / 10f).toDouble()
@@ -61,7 +71,7 @@ class AnalyzedDetailActivity : AppCompatActivity() {
         return total / realData.size
     }
 
-    fun initRecentChart(stockData : RecentStockData){
+    fun initRecentChart(stockData : AnalyzedStock){
         // 평균 값 구하기
         var average = 0F
         for(stock in stockData.resultData){
@@ -95,7 +105,9 @@ class AnalyzedDetailActivity : AppCompatActivity() {
         val lineData = LineData(dataSet)
         chart.run {
             data = lineData
-            description.isEnabled = false // 하단 Description Label 제거함
+            description.isEnabled = true // 하단 Description Label 제거함
+            description.text = "날짜"
+            description.textSize = 15f
             invalidate() // refresh
         }
 
@@ -114,7 +126,7 @@ class AnalyzedDetailActivity : AppCompatActivity() {
             // 라벨, 축라인, 그리드 사용하지 않음
             setDrawLabels(false)
             setDrawAxisLine(true)
-            setDrawGridLines(true)
+            setDrawGridLines(false)
 
             // 한계선 추가
             removeAllLimitLines()
@@ -122,7 +134,7 @@ class AnalyzedDetailActivity : AppCompatActivity() {
         }
         chart.axisRight.apply {
             // 우측 Y축은 사용하지 않음
-            isEnabled = false
+            isEnabled = true
         }
         // X축
         realChart.xAxis.apply {
@@ -130,11 +142,11 @@ class AnalyzedDetailActivity : AppCompatActivity() {
             textColor = Color.TRANSPARENT
             // 축라인, 그리드 사용하지 않음
             setDrawAxisLine(true)
-            setDrawGridLines(true)
+            setDrawGridLines(false)
         }
     }
 
-    fun initRealChart(stockData : RecentStockData){
+    fun initRealChart(stockData : AnalyzedStock){
         //-----------실제 데이터--------------//
 
         // 평균 값 구하기
@@ -186,8 +198,8 @@ class AnalyzedDetailActivity : AppCompatActivity() {
         realChart.axisLeft.apply {
             // 라벨, 축라인, 그리드 사용하지 않음
             setDrawLabels(false)
-            setDrawAxisLine(true)
-            setDrawGridLines(true)
+            setDrawAxisLine(false)
+            setDrawGridLines(false)
 
             // 한계선 추가
             removeAllLimitLines()

@@ -146,7 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="105dp"
-        android:text="3달"
+        android:text="2달"
         app:layout_constraintBottom_toBottomOf="@+id/check1m"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/check1m" />
@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="6달"
+        android:text="3달"
         app:layout_constraintStart_toStartOf="@+id/check1m"
         app:layout_constraintTop_toBottomOf="@+id/check1m" />
 
