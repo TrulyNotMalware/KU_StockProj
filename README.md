@@ -27,6 +27,10 @@ pandas-datareader
   $ python main.py
   ```
 ## 2) Go
+Go lang를 통한 서버 구축
+1. Kotlin과의 통신을 위한 각종 핸들러 구현
+2. Tensorflow(인공지능)과 통신을 위해 rabbitmq 이용
+3. server mysql을 이용하여 user data관리
 
 
 ## 3) Kotlin
