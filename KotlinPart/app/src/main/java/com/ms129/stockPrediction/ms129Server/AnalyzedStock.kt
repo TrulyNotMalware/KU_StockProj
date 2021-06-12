@@ -5,6 +5,7 @@ import java.io.Serializable
 data class AnalyzedStock(
     val date: String,
     val option: String,
+    val option2: String,
     val resultData: List<String>,
     val realData: List<String>,
     val stockCode: String
