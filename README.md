@@ -12,23 +12,27 @@ https://youtu.be/oNZUHw0t1h4
 3. CNN Model
 4. 1,2,3's Soft Voting
 
-# Used
+### Used
 Tensorflow 2.x
 
-# Dependency
+### Dependency
 TensorFlow 2.x
 pika
 pandas
 pandas-datareader
 
-# Run
+### Run
 * ```shell
   $ source ./venv/bin/activate
   $ python main.py
   ```
 ## 2) Backend
 
+
 ## 3) Frontend
+Kotlin으로 안드로이드 앱 형태의 프론트앤드를 구성
+1. NaverAPI로 키워드(주식)로 뉴스 기사 가져오기
+2. Retrofit2에서 REST API로 Backend Server와 통신.
 
 
 
