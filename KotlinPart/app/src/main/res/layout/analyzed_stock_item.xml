@@ -10,7 +10,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="20dp"
@@ -49,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="20dp">
 
             <TextView
                 android:id="@+id/textView9"
@@ -58,9 +57,10 @@
                 android:text="사용한 모델"/>
 
             <TextView
-                android:id="@+id/analyzedLastPriceView"
-                android:layout_width="wrap_content"
+                android:id="@+id/analyzedModelView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:text="RNN"
                 android:textStyle="bold"
                 tools:layout_editor_absoluteX="175dp"
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="20dp">
 
             <TextView
                 android:id="@+id/textView10"
@@ -80,29 +80,31 @@
 
             <TextView
                 android:id="@+id/analyzedPredictPriceView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:text="1200.0"
                 android:textStyle="bold"/>
 
         </LinearLayout>
         <LinearLayout
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/analyzedYieldView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:text="20%"
                 android:textSize="20dp"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/textView11"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="10dp"
                 android:text="예상 수익률"

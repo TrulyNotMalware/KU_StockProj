@@ -4,6 +4,7 @@ import java.io.Serializable
 
 data class FavoriteStock(
     val date: String,
-    val price: String,
-    val stockCode: String
+    val stockCode: String,
+    val realFirst: String,
+    val predictLast: String
 ): Serializable

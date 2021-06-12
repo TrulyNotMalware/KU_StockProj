@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -36,25 +37,21 @@ class EditFavoriteStock : AppCompatActivity() {
         }
 
         addButton.setOnClickListener {
+            progressBarInEditStock.visibility = View.VISIBLE
             val returnIntent = Intent()
             returnIntent.putExtra("jsonArray", jsonArray)
-            myAPI.addInterest(DInterestStockPost("1725733313",jsonArray[0], "2020-01-01", jsonArray[1]))
+            myAPI.addInterest(DInterestStockPost("1725733313",jsonArray[0], "2019-01-01", jsonArray[1]))
                 .enqueue(object: Callback<DResult> {
                     override fun onResponse(call: Call<DResult>, response: Response<DResult>) {
                         Log.d("FavoriteStock ADD :", "SUCCESS")
                         val res = response.body()
-                        if(res!!.Insert == "1"){
-                            setResult(RESULT_OK, returnIntent)
-                            finish()
-                        }
-                        else{
-                            Log.e("FAvoriteStock Add(result error):", "FAILED")
-                            finish()
-                        }
+                        progressBarInEditStock.visibility = View.GONE
+                        finish()
                     }
 
                     override fun onFailure(call: Call<DResult>, t: Throwable) {
                         Log.e("FavoriteStock ADD :", "FAILED")
+                        progressBarInEditStock.visibility = View.GONE
                         finish()
                     }
                 })
@@ -80,10 +77,6 @@ class EditFavoriteStock : AppCompatActivity() {
 //                })
         }
         cancelButton.setOnClickListener {
-            val returnIntent = Intent()
-            val failedArray = arrayOf("fail")
-            returnIntent.putExtra("jsonArray", failedArray)
-            setResult(RESULT_OK, returnIntent)
             finish()
         }
     }
@@ -96,9 +89,20 @@ class EditFavoriteStock : AppCompatActivity() {
         Log.d("COde: ", json.toString())
         jsonArray = arrayOf<String>(json.globalQuote.symbol, json.globalQuote.price, json.globalQuote.close)
         addButton.isEnabled = true
-        val str = "종목 코드: ${json.globalQuote.symbol}\n종목 가격: ${json.globalQuote.price}\n최신 일자: ${json.globalQuote.close}"
-        text_result.text = str
+        if(json.globalQuote.symbol != null || json.globalQuote.symbol != "null") {
+            val str = "종목 코드: ${json.globalQuote.symbol}\n종목 가격: ${json.globalQuote.price}\n최신 일자: ${json.globalQuote.close}"
+            text_result.text = str
+        }
+        else{
+            text_result.text = "존재하지 않는 주식명이거나 오류가 발생했습니다."
+        }
+        if(json.globalQuote.symbol == "null"){
+            text_result.text = "존재하지 않는 주식명이거나 오류가 발생했습니다."
+        }
+    }
 
+    override fun onBackPressed() {
+        finish()
     }
 
 }

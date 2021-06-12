@@ -59,15 +59,16 @@
 
             <TextView
                 android:id="@+id/favoriteLastPriceView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1000.0"
                 android:textStyle="bold"
+                android:textAlignment="center"
                 tools:layout_editor_absoluteX="175dp"
                 tools:layout_editor_absoluteY="57dp" />
         </LinearLayout>
         <LinearLayout
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -80,29 +81,31 @@
 
             <TextView
                 android:id="@+id/favoritePredictPriceView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:text="1200.0"
                 android:textStyle="bold"/>
 
         </LinearLayout>
         <LinearLayout
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/favoriteYieldView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:text="20%"
                 android:textSize="20dp"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/textView11"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="10dp"
                 android:text="예상 수익률"

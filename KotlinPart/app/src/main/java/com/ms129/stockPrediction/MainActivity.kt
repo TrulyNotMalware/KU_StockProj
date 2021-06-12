@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ms129.stockPrediction.favoriteStock.EditFavoriteStock
 import com.ms129.stockPrediction.favoriteStock.FavoriteStockActivity
 import com.ms129.stockPrediction.ms129Server.*
 import com.ms129.stockPrediction.naverAPI.INaverAPI
@@ -26,9 +27,9 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     lateinit var myAPI : IController
-    lateinit var naverAPI : INaverAPI
     lateinit var favoriteRecyclerAdapter : FavoriteRecyclerAdapter
     lateinit var analyzedRecyclerAdapter: AnalyzedRecyclerAdapter
+    lateinit var userId : String
     val REQUEST_LIST_STOCK = 99
 
 
@@ -39,19 +40,22 @@ class MainActivity : AppCompatActivity() {
         val retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(IController::class.java)
         init()
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        init()
+    }
 
     private fun init() {
         val receivedIntent = intent
         val isFirst = receivedIntent.getStringExtra("IS_FIRST") as String
         val nickName = receivedIntent.getStringExtra("NICK_NAME") as String
         val id = receivedIntent.getStringExtra("ID") as String
-
+        userId = id
         initNaver()
 
-        setButtonListener()
+
         if(isFirst == "0"){
             myAPI.onLoad(id).enqueue(object: Callback<DonLoad?> {
                 override fun onResponse(call: Call<DonLoad?>, response: Response<DonLoad?>) {
@@ -64,17 +68,18 @@ class MainActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<DonLoad?>, t: Throwable) {
                     Log.d("[MAIN] OnLoad Failure::", t.toString())
                     initTopView("FAIL")
-                    initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL")))
-                    initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
+                    initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL", "FAIL")))
+                    initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "0", "0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
                 }
             })
         }
         else{
             Log.d("[MAIN] isFirst::", "YES")
             initTopView("FAIL")
-            initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL")))
-            initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
+            initFavoriteSector(listOf(FavoriteStock("FAIL", "FAIL", "FAIL", "FAIL")))
+            initAnalyzedSector(listOf(AnalyzedStock("nullOrSize0", "nullOrSize0", "0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")))
         }
+        setButtonListener(userId)
     }
 
     private fun initAnalyzedSector(analyzedStocks: List<AnalyzedStock>?) {
@@ -83,11 +88,13 @@ class MainActivity : AppCompatActivity() {
         var modelList = ArrayList<AnalyzedStock>()
         if(analyzedStocks == null || analyzedStocks.isEmpty()){
             Log.e("[MAIN] AnalyzedSector::", "null or empty")
-            val data1 = AnalyzedStock("nullOrSize0", "nullOrSize0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")
+            val data1 = AnalyzedStock("nullOrSize0", "nullOrSize0", "0", listOf("0", "1"), listOf("0", "1"),"nullOrSize0")
             modelList.add(data1)
             analyzedRecyclerAdapter.submitList(modelList)
         }
         else{
+            analyzeSampleView.visibility = View.GONE
+            analyzedMainRecyclerView.visibility = View.VISIBLE
             Log.e("[MAIN] AnalyzedSector::", ">=5")
             if(analyzedStocks.size >= 3)
                 for(i in 0..2)
@@ -102,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@MainActivity, AnalyzedDetailActivity::class.java)
                 intent.putExtra("MAIN_ANALYZED_DATA", temp[position])
+                intent.putExtra("ID", userId)
                 startActivity(intent)
             }
         }
@@ -113,11 +121,11 @@ class MainActivity : AppCompatActivity() {
         favoriteRecyclerAdapter = FavoriteRecyclerAdapter()
         var modelList = ArrayList<FavoriteStock>()
         if(favoriteStocks == null || favoriteStocks.isEmpty()){
-            val data1 = FavoriteStock("nullOrSize0", "nullOrSize0", "nullOrSize0")
-            modelList.add(data1)
-            favoriteRecyclerAdapter.submitList(modelList)
+            return
         }
         else{
+            favoriteSampleView.visibility = View.GONE
+            interestRecyclerView.visibility = View.VISIBLE
             val temp = ArrayList<FavoriteStock>()
             Log.e("[MAIN] FavoriteSector::", ">=5")
             if(favoriteStocks.size >= 5)
@@ -138,7 +146,7 @@ class MainActivity : AppCompatActivity() {
         interestRecyclerView.adapter = favoriteRecyclerAdapter
     }
 
-    private fun setButtonListener(){
+    private fun setButtonListener(userId: String){
         accountBtn.setOnClickListener {
             val intent = Intent(this, AccountInfoActivity::class.java)
             startActivity(intent)
@@ -151,12 +159,14 @@ class MainActivity : AppCompatActivity() {
 
         recentAnalyzeButton.setOnClickListener {
             val intent = Intent(this, RecentAnalyzedActivity::class.java)
+            intent.putExtra("ID", userId)
             startActivity(intent)
+
         }
 
         favStockSettingButton.setOnClickListener {
-            val intent = Intent(this, FavoriteStockActivity::class.java)
-            startActivityForResult(intent, REQUEST_LIST_STOCK)
+            val intent = Intent(this, EditFavoriteStock::class.java)
+            startActivity(intent)
         }
 
         newsButton.setOnClickListener {
@@ -180,8 +190,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun onSearchNewsFetched(news: List<Items>) {
-        //Log.d("NaverAPI",news.toString())
-        val newsView = findViewById<TextView>(R.id.newsView1)
         newsView1.text = news[0].title.parseAsHtml()
         newsView2.text = news[1].title.parseAsHtml()
         newsView3.text = news[2].title.parseAsHtml()
@@ -206,32 +214,4 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "error result", Toast.LENGTH_SHORT).show()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        val retrofit = RetrofitClient.getInstance()
-//        val myAPI = retrofit.create(IController::class.java)
-//        UserApiClient.instance.me { user, error ->
-//            myAPI.onLoad(user!!.id.toString()).enqueue(object : Callback<DonLoad> {
-//                override fun onResponse(call: Call<DonLoad>, response: Response<DonLoad>) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onFailure(call: Call<DonLoad>, t: Throwable) {
-//                    TODO("Not yet implemented")
-//                }
-//            })
-//        }
-//    }
-//override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//    super.onActivityResult(requestCode, resultCode, data)
-//    if(resultCode != RESULT_OK) return
-//
-//    if(requestCode == REQUEST_LIST_STOCK){
-//        if(data != null){
-//            val receiveData = data.getStringArrayExtra("stock_list") as Array<String>
-//            val str = "Code: " + receiveData!![0] + "   Price: " + receiveData!![1]
-//            stock_view1.text = str
-//        }
-//    }
-//}
 }

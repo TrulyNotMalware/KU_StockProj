@@ -1,5 +1,6 @@
 package com.ms129.stockPrediction
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class FavoriteRecyclerAdapter:RecyclerView.Adapter<FavoriteRecyclerAdapter.Favor
         private val favoriteStockDateView = itemView.favoriteDateView
         private val favoriteLastPriceView = itemView.favoriteLastPriceView
         private val favoriteYieldView = itemView.favoriteYieldView
+        private val favoritePredictPriceView = itemView.favoritePredictPriceView
 
         init {
             itemView.setOnClickListener {
@@ -33,12 +35,20 @@ class FavoriteRecyclerAdapter:RecyclerView.Adapter<FavoriteRecyclerAdapter.Favor
         fun bind(favoriteStock: FavoriteStock){
             favoriteStockCode.text = favoriteStock.stockCode
             favoriteStockDateView.text = favoriteStock.date
-            favoriteLastPriceView.text = favoriteStock.price
-            var yieldd = 99.99
-            if(yieldd < 0)
-                favoriteYieldView.text = yieldd.toString() + "%"
-            else
-                favoriteYieldView.text = "+" + yieldd.toString() + "%"
+            val firstResult  = Math.round(favoriteStock.realFirst.toDouble() * 100) / 100.0
+            val lastResult = Math.round(favoriteStock.predictLast.toDouble() * 100) / 100.0
+            favoriteLastPriceView.text = "$" + firstResult
+            favoritePredictPriceView.text = "$" + lastResult
+            var yieldd = (favoriteStock.predictLast.toDouble() - favoriteStock.realFirst.toDouble()) / favoriteStock.realFirst.toDouble() * 100
+            var result = Math.round(yieldd * 100) / 100.0
+            if(yieldd < 0) {
+                favoriteYieldView.text = result.toString() + "%"
+                favoriteYieldView.setTextColor(Color.BLUE)
+            }
+            else {
+                favoriteYieldView.text = "+" + result.toString() + "%"
+                favoriteYieldView.setTextColor(Color.RED)
+            }
             //analyzedOptionViewView.text = recentStockData.option
         }
 
