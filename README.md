@@ -6,7 +6,7 @@ https://youtu.be/oNZUHw0t1h4
 
 ![image](https://user-images.githubusercontent.com/47394504/121759533-13d62680-cb61-11eb-84cf-f6bad14132a1.png)
 
-## 1) AI Models
+## 1) TF
 1. RNN Model
 2. LSTM Model
 3. CNN Model
@@ -26,10 +26,10 @@ pandas-datareader
   $ source ./venv/bin/activate
   $ python main.py
   ```
-## 2) Backend
+## 2) Go
 
 
-## 3) Frontend
+## 3) Kotlin
 Kotlin으로 안드로이드 앱 형태의 프론트앤드를 구성
 1. NaverAPI로 키워드(주식)로 뉴스 기사 가져오기
 2. Retrofit2에서 REST API로 Backend Server와 통신.
